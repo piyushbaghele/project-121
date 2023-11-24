@@ -14,7 +14,7 @@ camera.set(4 , 480)
 mountain = cv2.imread('IMG1.jpeg')
 
 # resizing the mountain image as 640 X 480
-mountain_1 = cv2.resize(mountain,None,fx=640,fy=480)
+mountain_1 = cv2.resize(mountain,(640,480))
 
 while True:
 
@@ -40,16 +40,18 @@ while True:
         # inverting the mask
         mask_1= cv2.morphologyEx(mask_1, cv2.MORPH_OPEN,np.ones((3,3),np.uint8))
        
-        
-        # mask_1 = cv2.inRange(frame_rgb, lower_red,upper_red) 
-        # mask_1 = cv2.erode(mask_1, np.ones, iterations=1) 
-        # mask_1 = cv2.morphologyEx(mask_1, cv2.MORPH_OPEN, kernel) 
-        # mask_1 = cv2.dilate(mask_1, kernel, iterations=1) 
-
         # bitwise and operation to extract foreground / person
         mask_2 = cv2.bitwise_not(mask_1)
         # final image
-        final_output = cv2.addWeighted(mountain_1,1,mask_2,1,0)
+        mask_2_resized = cv2.resize(mask_2, (640, 480))
+        
+
+
+        print("mountain_1 shape:", mountain_1.shape)
+       
+        mask_2_resized_color = cv2.cvtColor(mask_2_resized, cv2.COLOR_GRAY2BGR)
+        print("mask_2_resized shape:", mask_2_resized_color.shape)
+        final_output = cv2.add(mountain_1, mask_2_resized_color)
         # show it
         cv2.imshow('frame' , final_output)
 
