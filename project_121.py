@@ -12,7 +12,7 @@ camera.set(4, 480)
 mountain = cv2.imread('IMG1.jpeg')
 
 # resizing the mountain image as 640 X 480
-mountain_1 = cv2.resize(mountain, (640, 480))
+mountain = cv2.resize(mountain, (640, 480))
 
 while True:
     # read a frame from the attached camera
@@ -34,16 +34,15 @@ while True:
         mask_1 = cv2.inRange(frame_rgb, lower_bound, upper_bound)
 
         # inverting the mask
-        mask_2 = cv2.bitwise_not(mask_1)
+        mask_1 = cv2.bitwise_not(mask_1)
 
         # Apply the mask to the mountain image to replace the background
-        mountain_masked = cv2.bitwise_and(mountain_1, mountain_1, mask=mask_2)
-
+    
         # Apply the inverse mask to the original frame to keep the face
-        frame_masked = cv2.bitwise_and(frame, frame, mask=mask_1)
+        person = cv2.bitwise_and(frame, frame, mask=mask_1)
 
         # Combine the masked mountain image and the masked frame
-        final_output = cv2.add(frame_masked, mountain_masked)
+        final_output = cv2.addWeighted(mountain,1,person,1,0)
 
         # show it
         cv2.imshow('frame', final_output)
